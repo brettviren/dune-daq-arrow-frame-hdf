@@ -29,6 +29,7 @@
 #include "arrow_hdf/Address.hpp"
 #include "arrow_hdf/Hdf5File.hpp"
 
+#include <algorithm>
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
@@ -111,6 +112,17 @@ int main(int argc, char** argv)
                 std::cerr << "  " << rid.group << ": no TPC ADC traces; skipped\n";
                 continue;
             }
+
+            // Emit traces in ascending OFFLINE channel-id order. The DAQ delivers
+            // them in online/hardware (per-fragment) order; after the online->offline
+            // map is applied, sorting here makes the frame's row order follow the
+            // offline convention (planes become contiguous channel ranges), which
+            // is what offline consumers/displays expect. (Any unmapped channels,
+            // id < 0, sort to the front.)
+            std::stable_sort(traces.begin(), traces.end(),
+                             [](const WireCell::ITrace::pointer& a, const WireCell::ITrace::pointer& b) {
+                                 return a->channel() < b->channel();
+                             });
 
             auto frame = dune_daq_wct::make_frame(static_cast<int>(rid.number), 0.0, tick, traces);
             auto fr = WireCell::Arrow::to_arrow_sparse(frame);
