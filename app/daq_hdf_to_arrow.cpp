@@ -23,7 +23,7 @@
 
 #include "dune_daq_hdf/DaqHdf5File.hpp"
 #include "dune_daq_codec/Decode.hpp"
-#include "dune_daq_wct/OnlineOfflineChannelMap.hpp"
+#include "dune_daq_codec/OnlineOfflineChannelMap.hpp"
 #include "dune_daq_wct/ToFrame.hpp"
 #include "wire_cell_arrow/Converters.hpp"
 #include "arrow_hdf/Address.hpp"
@@ -72,7 +72,7 @@ int main(int argc, char** argv)
 
     try {
         dune_daq_hdf::DaqHdf5File in(in_path);
-        dune_daq_wct::OnlineOfflineChannelMap cmap(map_path);
+        dune_daq_codec::OnlineOfflineChannelMap cmap(map_path);
         std::cerr << "channel map: " << map_path << " (schema "
                   << dune_daq_codec::OnlineOfflineChannels::schema_name(cmap.channels().schema())
                   << ", " << cmap.channels().size() << " channels)\n";

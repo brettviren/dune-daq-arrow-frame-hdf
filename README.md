@@ -1,4 +1,4 @@
-# dune-daq-arrow
+# dune-daq-arrow-frame-hdf
 
 End-to-end, **non-Phlex** pipeline gluing the DUNE-DAQ → WCT → Arrow packages
 into a single tool, for visual/end-to-end validation of the channel map and the
@@ -25,9 +25,9 @@ Depends on the installed Configs for `wire_cell_arrow`, `arrow_hdf`,
 HDF5 from the Spack view).
 
 ```
-cmake -S source/dune-daq-arrow -B builds/dune-daq-arrow \
+cmake -S source/dune-daq-arrow-frame-hdf -B builds/dune-daq-arrow-frame-hdf \
   -DCMAKE_PREFIX_PATH="$PWD/install;$PWD/local"
-cmake --build builds/dune-daq-arrow
+cmake --build builds/dune-daq-arrow-frame-hdf
 ```
 
 ## Use
