@@ -21,8 +21,9 @@ writes** (product type `wc.frame`; member tables `traces`, `frame_tags`,
 ## Build
 
 Depends on the installed Configs for `wire_cell_arrow`, `arrow_hdf`,
-`dune_daq_hdf`, `dune_daq_wct`, `dune_daq_codec` (and Arrow / WireCell / Boost /
-HDF5 from the Spack view).
+`dune_daq_hdf`, `dune_daq_codec` (and Arrow / WireCell / Boost /
+HDF5 from the Spack view). The DAQ->WCT bridge (`ToFrame`, formerly the
+`dune-daq-wct` package) is now built in-tree here.
 
 ```
 cmake -S source/dune-daq-arrow-frame-hdf -B builds/dune-daq-arrow-frame-hdf \

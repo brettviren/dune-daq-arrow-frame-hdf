@@ -24,7 +24,7 @@
 #include "dune_daq_hdf/DaqHdf5File.hpp"
 #include "dune_daq_codec/Decode.hpp"
 #include "dune_daq_codec/OnlineOfflineChannelMap.hpp"
-#include "dune_daq_wct/ToFrame.hpp"
+#include "dune_daq_arrow_frame_hdf/ToFrame.hpp"
 #include "wire_cell_arrow/Converters.hpp"
 #include "arrow_hdf/Address.hpp"
 #include "arrow_hdf/Hdf5File.hpp"
@@ -102,7 +102,7 @@ int main(int argc, char** argv)
                     ++n_skip;
                     continue;
                 }
-                auto tr = dune_daq_wct::traces_from(dec.adc, dec.meta, cmap);
+                auto tr = dune_daq_arrow_frame_hdf::traces_from(dec.adc, dec.meta, cmap);
                 for (const auto& t : tr) if (t->channel() < 0) ++n_invalid;
                 traces.insert(traces.end(), tr.begin(), tr.end());
                 ++n_frag;
@@ -124,7 +124,7 @@ int main(int argc, char** argv)
                                  return a->channel() < b->channel();
                              });
 
-            auto frame = dune_daq_wct::make_frame(static_cast<int>(rid.number), 0.0, tick, traces);
+            auto frame = dune_daq_arrow_frame_hdf::make_frame(static_cast<int>(rid.number), 0.0, tick, traces);
             auto fr = WireCell::Arrow::to_arrow_sparse(frame);
             if (!fr.ok()) return fail("to_arrow_sparse: " + fr.status().ToString());
 

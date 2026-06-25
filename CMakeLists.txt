@@ -42,10 +42,21 @@ find_package(spdlog REQUIRED)
 find_package(wire_cell_arrow CONFIG REQUIRED)
 find_package(arrow_hdf CONFIG REQUIRED)
 find_package(dune_daq_hdf CONFIG REQUIRED)
-find_package(dune_daq_wct CONFIG REQUIRED)
 find_package(dune_daq_codec CONFIG REQUIRED)
 
 add_compile_options(-Wall -Wpedantic -Werror)
+
+# The DUNE-DAQ -> WCT bridge (ToFrame): formerly the standalone dune-daq-wct
+# package, folded in here as its only client and renamed into this package's
+# own dune_daq_arrow_frame_hdf namespace / header path. Built as an internal
+# static lib shared by the app and the tests below.
+add_library(daq_to_frame STATIC dune_daq_arrow_frame_hdf/ToFrame.cpp)
+target_include_directories(daq_to_frame PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(daq_to_frame
+  PUBLIC
+    dune_daq_codec::dune_daq_codec
+    WireCell::Aux WireCell::Iface WireCell::Util
+    ${DDA_RUNTIME_LIBS})
 
 # ---------------------------------------------------------------------------
 # daq_hdf_to_arrow — the end-to-end DAQ-HDF5 -> wc.frame-in-HDF5 pipeline tool
@@ -57,10 +68,13 @@ target_link_libraries(daq_hdf_to_arrow
   PRIVATE
     dune_daq_hdf::dune_daq_hdf
     dune_daq_codec::dune_daq_codec
-    dune_daq_wct::dune_daq_wct
+    daq_to_frame
     wire_cell_arrow::wire_cell_arrow
     arrow_hdf::arrow_hdf
     ${DDA_RUNTIME_LIBS})
+
+enable_testing()
+add_subdirectory(test)
 
 include(GNUInstallDirs)
 install(TARGETS daq_hdf_to_arrow RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
